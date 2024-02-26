@@ -8,16 +8,24 @@
 import Foundation
 
 class Question : RIdentifiable {
+    static var placeholder = Question(name: "Placeholder", tip: "Placeholder", code: "Placeholder", layout: .list, options: [
+        Option(text: "Option A"),
+        Option(text: "Option B"),
+        Option(text: "Option C")
+    ])
+    
     enum Layout {
         case list, grid, match, write
     }
     
-    let description: String
+    let tip: String
+    let code: String
     let layout: Question.Layout
-    let options: [Option]
+    var options: [Option]
     
-    init(name: String, description: String, layout: Question.Layout, options: [Option]) {
-        self.description = description
+    init(name: String, tip: String, code: String = "", layout: Question.Layout, options: [Option]) {
+        self.tip = tip
+        self.code = code
         self.layout = layout
         self.options = options
         super.init(name: name)

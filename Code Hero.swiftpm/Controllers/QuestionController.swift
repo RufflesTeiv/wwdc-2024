@@ -7,26 +7,40 @@
 
 import Foundation
 
-public class QuestionController {
-    let question : Question
+public class QuestionController : ObservableObject {
+    let uiController = UiController.shared
+    
+    var question : Question
+    let randomQuestions : Bool
     
     var questionAnsweredListeners : [(Bool)->Void] = []
-    var selectedOptionIdx : Int = -1
-    var writtenText: String = ""
-    var wrongMatchCount : Int = 0
     
-    init(question: Question) {
+    @Published var selectedOptionIdx : Int = -1
+    @Published var writtenText: String = ""
+    @Published var wrongMatchCount : Int = 0
+    
+    init(question: Question, randomQuestions : Bool) {
         self.question = question
+        self.question.options.shuffle()
+        self.randomQuestions = randomQuestions
+        uiController.setCurrentQuestion(question: question)
+        uiController.questionAnsweredListeners.append(selectOption)
     }
     
     func selectOption(index: Int) {
         switch(question.layout) {
         case .list, .grid:
             selectedOptionIdx = index
+            
+            let option = question.options[index]
+            option.tintColor = option.correct ? .green : .red
+            
+            sendSelection()
         case .match:
             tryMatch(newIndex: index)
         default: break
         }
+        
     }
     
     func sendSelection() {
@@ -58,8 +72,10 @@ public class QuestionController {
     }
     
     private func sendQuestionAnswered(success : Bool) {
-        for listener in questionAnsweredListeners {
-            listener(success)
+        if randomQuestions || (!randomQuestions && success) {
+            for listener in questionAnsweredListeners {
+                listener(success)
+            }
         }
     }
     

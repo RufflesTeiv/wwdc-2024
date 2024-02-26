@@ -17,13 +17,15 @@ class GameController : ObservableObject {
     var currentSceneName: String = ""
     var levelController : LevelController?
    
-    var player : Player = Player()
-    var knownConceptNames: [String] = []
+    @Published var knownConceptNames: [String] = []
+    @Published var player : Player = Player()
+    @Published var playerHealth : Int = 0
     
     private init(){
         // Cutscene
         
         // First level
+        startLevel(level: LevelsData.levels[0])
         // Other levels
         
         // Ending
@@ -34,12 +36,16 @@ class GameController : ObservableObject {
         levelController?.levelCompletedListeners.append {
             self.endLevel(success: true)
         }
-        player.regenerateHealth()
+        regeneratePlayerHealth()
     }
     
     func endLevel(success: Bool) {
         // TODO: Create level advancement logic
         levelController = nil
+    }
+    
+    func regeneratePlayerHealth() {
+        playerHealth = player.maxHealth
     }
     
     // Public functions
@@ -51,9 +57,9 @@ class GameController : ObservableObject {
     }
     
     public func damagePlayer(damage: Int = 1) {
-        player.takeDamage(damage: damage)
+        playerHealth -= damage
         
-        if (player.health <= 0 && levelController != nil) {
+        if (playerHealth <= 0 && levelController != nil) {
             endLevel(success: false)
         }
     }

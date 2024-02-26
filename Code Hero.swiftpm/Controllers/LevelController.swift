@@ -10,30 +10,42 @@ import Foundation
 class LevelController : ObservableObject {
     let level : Level
     var enemyController : EnemyController?
-    var currentEnemyIndex : Int = -1
     
+    var enemiesFought : Int = 0
     var levelCompletedListeners : [()->Void] = []
     
     init(level: Level) {
         self.level = level
-        nextEnemy()
+        
+        showPrompt(text: level.initialPrompt, closeListener: nextEnemy)
     }
     
     func nextEnemy() {
-        currentEnemyIndex += 1
+        enemiesFought += 1
         
-        if (currentEnemyIndex < level.enemies.count) {
-            let newEnemy = level.enemies[currentEnemyIndex]
-            
-            enemyController = EnemyController(enemy: newEnemy)
-            enemyController?.enemyDefeatedListeners.append {
-                self.nextEnemy()
-            }
+        if (enemiesFought < level.enemyCount) {
+            initEnemy(newEnemy: level.enemies.randomElement()!)
+        } else if (enemiesFought == level.enemyCount) {
+            initEnemy(newEnemy: level.finalEnemy)
+        } else {
+            showPrompt(text: level.finalPrompt, closeListener: {
+                for listener in self.levelCompletedListeners {
+                    listener()
+                }
+            })
         }
-        else {
-            for listener in levelCompletedListeners {
-                listener()
-            }
+    }
+    
+    func initEnemy(newEnemy: Enemy) {
+        enemyController = EnemyController(enemy: newEnemy)
+        enemyController?.enemyDefeatedListeners.append {
+            self.nextEnemy()
+        }
+    }
+    
+    private func showPrompt(text: String, closeListener: @escaping ()->Void) {
+        if (text != "") {
+            UiController.shared.showPrompt(text: text, closeListener: closeListener)
         }
     }
 }

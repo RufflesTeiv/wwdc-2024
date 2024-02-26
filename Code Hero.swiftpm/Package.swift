@@ -20,8 +20,8 @@ let package = Package(
             teamIdentifier: "TACYQT6842",
             displayVersion: "1.0",
             bundleVersion: "1",
-            appIcon: .placeholder(icon: .gift),
-            accentColor: .presetColor(.orange),
+            appIcon: .asset("AppIcon"),
+            accentColor: .asset("AccentColor"),
             supportedDeviceFamilies: [
                 .pad,
                 .phone
@@ -37,7 +37,11 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "AppModule",
-            path: "."
+            path: ".",
+            resources: [
+                .process("Resources"),
+                .process("runescape_uf.ttf")
+            ]
         )
     ]
 )
