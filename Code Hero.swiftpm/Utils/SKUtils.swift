@@ -17,7 +17,7 @@ class SKUtils {
         return touch.location(in: scene)
     }
     
-    static func setupPixelSpriteFromImage(_ scene : SKScene, _ imageNamed: String, _ spriteScale : Double, zPosition : CGFloat = 0.0, scale : Bool = true, addChild : Bool = true) -> SKSpriteNode {
+    static func setupPixelSpriteFromImage(scene : SKScene, imageNamed: String, spriteScale : Double, zPosition : CGFloat = 0.0, scale : Bool = true, addChild : Bool = true) -> SKSpriteNode {
         let spriteNode = SKSpriteNode(imageNamed: imageNamed)
         spriteNode.name = imageNamed
         spriteNode.zPosition = zPosition

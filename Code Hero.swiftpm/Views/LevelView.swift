@@ -18,6 +18,7 @@ struct LevelView : View {
         // Width x Height : 1024 x 1366
         var scene: SKScene {
             let scene = CombatScene()
+            // Tamanho pixel art : 128 x 57 (8 tiles x 4 tiles)
             scene.size = CGSize(width: 1024, height: 450)
             return scene
         }
